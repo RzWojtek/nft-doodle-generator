@@ -124,6 +124,35 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 .nst.pending{background:rgba(255,209,102,.1);color:var(--warn)}
 .nst.generating{background:rgba(0,229,255,.1);color:var(--accent)}
 .nst.error{background:rgba(255,78,78,.1);color:var(--err)}
+
+/* ZAKŁADKI GŁÓWNE */
+.main-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:0;background:rgba(0,0,0,0.15)}
+.main-tab{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;padding:14px 24px;cursor:pointer;border:none;background:transparent;color:var(--text2);border-bottom:2px solid transparent;transition:all .2s;position:relative;top:1px}
+.main-tab.on{color:var(--accent);border-bottom-color:var(--accent);background:rgba(0,229,255,0.05)}
+.main-tab:hover{color:var(--text);background:rgba(255,255,255,0.03)}
+.tab-panel{display:none}.tab-panel.on{display:block}
+
+/* KOLEKCJA */
+.col-layout{display:grid;grid-template-columns:340px 1fr;gap:18px;padding:18px 0}
+.layer-card{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:14px;margin-bottom:10px;position:relative;cursor:pointer;transition:border-color .2s}
+.layer-card:hover{border-color:rgba(0,229,255,0.35)}
+.layer-card.active-layer{border-color:var(--accent);box-shadow:0 0 12px rgba(0,229,255,0.1)}
+.layer-badge{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:2px 8px;border-radius:3px;margin-right:6px}
+.lb-base{background:rgba(179,255,107,.1);color:var(--ok)}
+.lb-layer{background:rgba(0,229,255,.1);color:var(--accent)}
+.lb-done{background:rgba(179,255,107,.12);color:var(--ok)}
+.lb-pending{background:rgba(255,209,102,.1);color:var(--warn)}
+.nft-thumb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+.thumb-card{background:var(--card);border:1px solid var(--border);border-radius:7px;overflow:hidden;cursor:pointer;transition:transform .15s,border-color .15s}
+.thumb-card:hover{transform:translateY(-1px);border-color:rgba(0,229,255,.35)}
+.thumb-card img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+.thumb-card .tname{font-size:10px;padding:4px 6px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.thumb-card .tstatus{font-size:9px;font-weight:700;text-transform:uppercase;padding:2px 6px 4px;color:var(--text2)}
+.col-stat{font-family:'Space Mono',monospace;font-size:20px;font-weight:700;color:var(--accent)}
+.col-stat-lbl{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text2)}
+.trait-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.trait-row input{flex:1;font-size:12px;padding:5px 8px}
+.tree-line{position:absolute;left:-16px;top:50%;width:16px;height:1px;background:var(--border)}
 .ntime{font-family:'Space Mono',monospace;font-size:9px;color:var(--text2)}
 .nacts{position:absolute;top:5px;right:5px;display:flex;gap:3px;opacity:0;transition:opacity .2s}
 .ncard:hover .nacts{opacity:1}
@@ -208,6 +237,14 @@ hr.div{border:none;border-top:1px solid var(--border);margin:12px 0}
 </div>
 </header>
 
+<!-- ZAKŁADKI GŁÓWNE -->
+<div class="main-tabs">
+  <button class="main-tab on" onclick="switchTab('portraits',this)">✏️ Portrety NFT</button>
+  <button class="main-tab" onclick="switchTab('collection',this)">🐰 Kolekcja NFT</button>
+</div>
+
+<!-- TAB 1: PORTRETY -->
+<div id="tab-portraits" class="tab-panel on">
 <div class="wrap">
 <div class="layout">
 
@@ -216,8 +253,16 @@ hr.div{border:none;border-top:1px solid var(--border);margin:12px 0}
 
     <!-- STYL GENEROWANIA -->
     <div class="panel">
-      <div class="ph"><span class="pt">🎨 Styl generowania</span></div>
+      <div class="ph"><span class="pt">🎨 Model i Styl</span></div>
       <div class="pb">
+        <div class="fg" style="margin-bottom:10px">
+          <label>Model AI</label>
+          <div class="preset-grid" id="model-grid" style="grid-template-columns:1fr 1fr"></div>
+          <div style="font-size:11px;color:var(--text2);margin-top:6px">
+            Aktualny model: <strong id="active-model-name" style="color:var(--accent)">—</strong>
+          </div>
+        </div>
+        <hr class="div" style="margin:10px 0">
         <div class="active-preset-bar" id="active-bar">
           Aktualny styl: <strong id="active-name">Brak wyboru</strong>
         </div>
@@ -329,6 +374,113 @@ hr.div{border:none;border-top:1px solid var(--border);margin:12px 0}
 
 </div>
 </div>
+</div><!-- koniec tab-portraits -->
+
+<!-- TAB 2: KOLEKCJA NFT -->
+<div id="tab-collection" class="tab-panel">
+<div class="wrap">
+<div class="col-layout">
+
+  <!-- LEWA KOLUMNA: Drzewo kolekcji -->
+  <div>
+
+    <div class="panel">
+      <div class="ph" style="justify-content:space-between">
+        <span class="pt">🌳 Struktura kolekcji</span>
+        <div style="display:flex;gap:6px">
+          <button class="btn sm primary" onclick="colSyncAll()">↑ Sync wszystko</button>
+        </div>
+      </div>
+      <div class="pb">
+
+        <!-- STATYSTYKI -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">
+          <div class="sbox"><span class="sv col-stat" id="col-total">0</span><span class="sl col-stat-lbl">Łącznie NFT</span></div>
+          <div class="sbox"><span class="sv col-stat" id="col-done" style="color:var(--ok)">0</span><span class="sl col-stat-lbl">Gotowe</span></div>
+          <div class="sbox"><span class="sv col-stat" id="col-pending" style="color:var(--warn)">0</span><span class="sl col-stat-lbl">Kolejka</span></div>
+        </div>
+
+        <!-- BAZOWE NFT -->
+        <div style="margin-bottom:12px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--accent)">Baza kolekcji</span>
+            <button class="btn sm" onclick="showAddBase()">+ Dodaj bazę</button>
+          </div>
+          <div id="base-list"></div>
+        </div>
+
+        <!-- WARSTWY -->
+        <div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--accent)">Warstwy cech</span>
+            <button class="btn sm" onclick="showAddLayer()">+ Dodaj warstwę</button>
+          </div>
+          <div id="layer-list"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- USTAWIENIA GENEROWANIA KOLEKCJI -->
+    <div class="panel">
+      <div class="ph"><span class="pt">⚙ Ustawienia generowania</span></div>
+      <div class="pb">
+        <div class="fg">
+          <label>Prompt bazowy (wspólny dla kolekcji)</label>
+          <textarea id="col-base-prompt" rows="2" placeholder="np. cute cartoon rabbit, simple background, digital art">cute cartoon rabbit, simple design, white background, flat colors</textarea>
+        </div>
+        <div class="fg">
+          <label>Negative prompt</label>
+          <input type="text" id="col-neg-prompt" value="realistic, photo, 3d, detailed, complex background">
+        </div>
+        <div class="fg">
+          <label>Siła img2img (0.3 = delikatna zmiana, 0.7 = duże zmiany)</label>
+          <div class="rw">
+            <input type="range" id="col-strength" min="0.2" max="0.8" step="0.05" value="0.45" oninput="document.getElementById('col-sv').textContent=parseFloat(this.value).toFixed(2)">
+            <span class="rv" id="col-sv">0.45</span>
+          </div>
+        </div>
+        <div class="fg">
+          <label>Rozmiar</label>
+          <select id="col-size">
+            <option value="512" selected>512 × 512</option>
+            <option value="768">768 × 768</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Model</label>
+          <select id="col-model">
+            <option value="sd15_mspaint_lcm">MS Paint + LCM</option>
+            <option value="sd15_lcm">SD 1.5 LCM</option>
+            <option value="sd15_default">SD 1.5 standard</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PRAWA KOLUMNA: Podgląd i galeria kolekcji -->
+  <div>
+    <div class="panel" style="margin-bottom:16px">
+      <div class="ph">
+        <span class="pt" id="col-view-title">🖼 Podgląd kolekcji</span>
+        <div style="display:flex;gap:8px;align-items:center">
+          <div class="filter-tabs" style="display:flex;gap:4px" id="col-layer-tabs"></div>
+          <span style="font-size:10px;font-family:'Space Mono',monospace;color:var(--text2)" id="col-view-cnt">0 NFT</span>
+          <button class="btn danger sm" onclick="colDeleteAll()">🗑 Wyczyść</button>
+        </div>
+      </div>
+      <div class="pb">
+        <div class="nft-thumb-grid" id="col-gallery"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+</div><!-- koniec tab-collection -->
+
 </div><!-- #app -->
 
 <!-- NFT MODAL -->
@@ -375,7 +527,18 @@ const FIREBASE_CONFIG = {
 const ALLOWED_EMAIL = "wojciech.rz81@gmail.com";
 
 // ═══════════════════════════════════════
-// STYLE / MODELE — 4 presets
+// MODELE AI
+// ═══════════════════════════════════════
+const MODELS = [
+  { id:"sd15_mspaint_lcm", icon:"🖌️", name:"MS Paint + LCM",   desc:"MS Paint LoRA + szybki LCM — REKOMENDOWANY", badge:"fast", badgeText:"~4 min/obraz" },
+  { id:"sd15_mspaint",     icon:"🎨", name:"MS Paint LoRA",    desc:"MS Paint LoRA bez LCM — lepsza jakość", badge:"slow", badgeText:"~15 min/obraz" },
+  { id:"sd15_lcm",         icon:"⚡", name:"SD 1.5 LCM",       desc:"Szybki SD 1.5 bez stylu LoRA", badge:"fast", badgeText:"~3 min/obraz" },
+  { id:"sd15_default",     icon:"🔧", name:"SD 1.5 standard",  desc:"Standardowy SD 1.5, wolny", badge:"slow", badgeText:"~20 min/obraz" },
+];
+let activeModel = localStorage.getItem('nft-model') || 'sd15_mspaint_lcm';
+
+// ═══════════════════════════════════════
+// STYLE / PRESETY — 4 presety promptów
 // ═══════════════════════════════════════
 const PRESETS = [
   {
@@ -449,12 +612,43 @@ auth.onAuthStateChanged(user => {
 
 function initApp() {
   db = firebase.firestore();
+  renderModels();
   renderPresets();
   applyPreset(activePreset, false);
   renderNames();
   loadSettings();
   startListener();
+  startColListener();
   log('Zalogowano. Nasłuchuję Firebase...','info');
+}
+
+function renderModels() {
+  const grid = document.getElementById('model-grid');
+  if(!grid) return;
+  grid.innerHTML = MODELS.map(m => `
+    <div class="preset-card ${m.id===activeModel?'active':''}" id="mc-${m.id}" onclick="applyModel('${m.id}')">
+      <div class="preset-icon">${m.icon}</div>
+      <div class="preset-name">${m.name}</div>
+      <div class="preset-desc">${m.desc}</div>
+      <span class="preset-badge ${m.badge}">${m.badgeText}</span>
+    </div>
+  `).join('');
+  const am = MODELS.find(x=>x.id===activeModel);
+  const el = document.getElementById('active-model-name');
+  if(el && am) el.textContent = am.icon+' '+am.name;
+}
+
+function applyModel(id) {
+  activeModel = id;
+  localStorage.setItem('nft-model', id);
+  document.querySelectorAll('#model-grid .preset-card').forEach(c=>c.classList.remove('active'));
+  const card = document.getElementById('mc-'+id);
+  if(card) card.classList.add('active');
+  const am = MODELS.find(x=>x.id===id);
+  const el = document.getElementById('active-model-name');
+  if(el && am) el.textContent = am.icon+' '+am.name;
+  toast('Model: '+( am?am.name:id)+' ✓');
+  log('Zmieniono model na: '+(am?am.name:id),'info');
 }
 
 function renderPresets() {
@@ -573,7 +767,7 @@ async function syncToFirebase(){
     const batch=db.batch();
     toAdd.forEach(name=>{
       const ref=db.collection('nft_items').doc(nameToId(name,activePreset));
-      batch.set(ref,{name,status:'pending',createdAt:firebase.firestore.FieldValue.serverTimestamp(),imageUrl:null,prompt:null,generationTime:null,stylePrompt,negPrompt,presetId:activePreset,presetName:p?p.name:'custom',imgSize,steps});
+      batch.set(ref,{name,status:'pending',createdAt:firebase.firestore.FieldValue.serverTimestamp(),imageUrl:null,prompt:null,generationTime:null,stylePrompt,negPrompt,presetId:activePreset,presetName:p?p.name:'custom',modelId:activeModel,modelName:MODELS.find(x=>x.id===activeModel)?.name||activeModel,imgSize,steps});
     });
     await batch.commit();
     const msg='Dodano '+toAdd.length+' nowych zadań ['+( p?p.name:'custom')+']';
@@ -608,7 +802,7 @@ function renderGallery(){
   grid.innerHTML=items.map(item=>{
     const lbl={done:'Gotowe',pending:'Czeka',generating:'Generuje...',error:'Błąd'}[item.status]||item.status;
     const t=item.generationTime?item.generationTime+'s':'—';
-    const styleBadge=item.presetName?`<span style="font-size:9px;color:var(--text2)">${item.presetName}</span>`:'';
+    const styleBadge=`<span style="font-size:9px;color:var(--text2)">${item.modelName||''} ${item.presetName||''}</span>`;
     const imgHtml=item.imageUrl
       ?`<img src="${item.imageUrl}" alt="${item.name}" loading="lazy">`
       :item.status==='generating'
@@ -691,6 +885,350 @@ function deleteFromModal(){
   if(!confirm('Usunąć NFT: '+curModal.name+'?'))return;
   deleteItem(curModal.id);
   closeModal();
+}
+
+// ═══════════════════════════════════════
+// ZAKŁADKI
+// ═══════════════════════════════════════
+function switchTab(tab, btn) {
+  document.querySelectorAll('.main-tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('tab-'+tab).classList.add('on');
+  if(tab==='collection') renderCollection();
+}
+
+// ═══════════════════════════════════════
+// KOLEKCJA NFT — dane
+// ═══════════════════════════════════════
+let colLayers = JSON.parse(localStorage.getItem('col-layers')||'[]');
+// Struktura layer: { id, type:'base'|'layer', name, traits:['laser eyes','sleepy eyes',...], parentLayerId:null|id }
+
+function colSave() { localStorage.setItem('col-layers', JSON.stringify(colLayers)); }
+
+function colNextId() { return 'l'+Date.now(); }
+
+// ═══════════════════════════════════════
+// RENDEROWANIE drzewa
+// ═══════════════════════════════════════
+function renderCollection() {
+  renderBaseList();
+  renderLayerList();
+  renderColGallery();
+  updateColStats();
+  renderColLayerTabs();
+}
+
+function renderBaseList() {
+  const el = document.getElementById('base-list'); if(!el) return;
+  const bases = colLayers.filter(l=>l.type==='base');
+  if(!bases.length) {
+    el.innerHTML = `<div style="font-size:12px;color:var(--text2);padding:8px;background:rgba(0,0,0,0.2);border-radius:6px;text-align:center">
+      Brak bazowych NFT.<br>Kliknij "+ Dodaj bazę" aby zacząć.
+    </div>`;
+    return;
+  }
+  el.innerHTML = bases.map(b => {
+    const count = countTraitVariants(b);
+    const genCount = getGeneratedCount(b.id);
+    return `<div class="layer-card ${b.id===activeColLayer?'active-layer':''}" onclick="selectColLayer('${b.id}')">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <span><span class="layer-badge lb-base">baza</span><strong style="font-size:13px">${b.name}</strong></span>
+        <div style="display:flex;gap:4px">
+          <button class="btn sm" onclick="event.stopPropagation();editLayer('${b.id}')">✏</button>
+          <button class="btn sm danger" onclick="event.stopPropagation();deleteLayer('${b.id}')">✕</button>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--text2)">
+        ${b.traits.length} wariantów • 
+        <span style="color:var(--ok)">${genCount} wygenerowane</span> / ${count} łącznie
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px">
+        ${b.traits.slice(0,4).map(t=>`<span class="ntag" style="font-size:10px">${t}</span>`).join('')}
+        ${b.traits.length>4?`<span style="font-size:10px;color:var(--text2)">+${b.traits.length-4} więcej</span>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderLayerList() {
+  const el = document.getElementById('layer-list'); if(!el) return;
+  const layers = colLayers.filter(l=>l.type==='layer');
+  if(!layers.length) {
+    el.innerHTML = `<div style="font-size:12px;color:var(--text2);padding:8px;background:rgba(0,0,0,0.2);border-radius:6px;text-align:center">
+      Brak warstw. Najpierw dodaj bazę, potem warstwy cech.
+    </div>`;
+    return;
+  }
+  el.innerHTML = layers.map(l => {
+    const total = countTotalWithLayer(l);
+    const genCount = getGeneratedCount(l.id);
+    return `<div class="layer-card ${l.id===activeColLayer?'active-layer':''}" onclick="selectColLayer('${l.id}')" style="margin-left:16px;position:relative">
+      <div class="tree-line"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <span><span class="layer-badge lb-layer">warstwa</span><strong style="font-size:13px">${l.name}</strong></span>
+        <div style="display:flex;gap:4px">
+          <button class="btn sm primary" onclick="event.stopPropagation();colSyncLayer('${l.id}')">↑ Sync</button>
+          <button class="btn sm" onclick="event.stopPropagation();editLayer('${l.id}')">✏</button>
+          <button class="btn sm danger" onclick="event.stopPropagation();deleteLayer('${l.id}')">✕</button>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--text2)">
+        ${l.traits.length} cech • 
+        <span style="color:var(--ok)">${genCount} wygenerowane</span> / ${total} łącznie
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px">
+        ${l.traits.slice(0,4).map(t=>`<span class="ntag" style="font-size:10px">${t}</span>`).join('')}
+        ${l.traits.length>4?`<span style="font-size:10px;color:var(--text2)">+${l.traits.length-4} więcej</span>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function countTraitVariants(layer) { return layer.traits.length || 1; }
+
+function countTotalWithLayer(layer) {
+  const bases = colLayers.filter(l=>l.type==='base');
+  const baseCombos = bases.reduce((acc,b)=>acc + b.traits.length, 0) || 1;
+  return baseCombos * layer.traits.length;
+}
+
+function getGeneratedCount(layerId) {
+  if(!colItems) return 0;
+  return colItems.filter(x=>x.layerId===layerId && x.status==='done').length;
+}
+
+let colItems = [];
+let activeColLayer = null;
+let colUnsubscribe = null;
+
+function startColListener() {
+  if(!db) return;
+  if(colUnsubscribe) colUnsubscribe();
+  colUnsubscribe = db.collection('col_items').orderBy('createdAt','desc')
+    .onSnapshot(snap => {
+      colItems = snap.docs.map(d=>({id:d.id,...d.data()}));
+      if(document.getElementById('tab-collection').classList.contains('on')) {
+        renderCollection();
+      }
+    }, err => console.error('col listener:', err));
+}
+
+function selectColLayer(id) {
+  activeColLayer = id;
+  renderBaseList();
+  renderLayerList();
+  renderColGallery();
+  renderColLayerTabs();
+}
+
+function renderColLayerTabs() {
+  const el = document.getElementById('col-layer-tabs'); if(!el) return;
+  const layers = colLayers;
+  el.innerHTML = `<button class="tab ${!activeColLayer?'on':''}" onclick="selectColLayer(null)">Wszystkie</button>` +
+    layers.map(l=>`<button class="tab ${l.id===activeColLayer?'on':''}" onclick="selectColLayer('${l.id}')">${l.type==='base'?'🟣':'🔵'} ${l.name}</button>`).join('');
+}
+
+function renderColGallery() {
+  const el = document.getElementById('col-gallery'); if(!el) return;
+  let items = activeColLayer ? colItems.filter(x=>x.layerId===activeColLayer) : colItems;
+  document.getElementById('col-view-cnt').textContent = items.length + ' NFT';
+  if(!items.length) {
+    el.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text2);font-size:13px">
+      Brak NFT. Dodaj bazę, warstwy i kliknij ↑ Sync.
+    </div>`;
+    return;
+  }
+  el.innerHTML = items.map(item => {
+    const lbl = {done:'✓',pending:'...',generating:'⟳',error:'✗'}[item.status]||'?';
+    return `<div class="thumb-card" onclick="openColModal('${item.id}')">
+      ${item.imageUrl
+        ? `<img src="${item.imageUrl}" alt="${item.name}" loading="lazy">`
+        : `<div style="aspect-ratio:1;background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;font-size:20px;opacity:.3">${item.status==='generating'?'⟳':'🎨'}</div>`
+      }
+      <div class="tname">${item.name}</div>
+      <div class="tstatus" style="color:${item.status==='done'?'var(--ok)':item.status==='error'?'var(--err)':'var(--warn)'}">${lbl} ${item.status}</div>
+    </div>`;
+  }).join('');
+}
+
+function updateColStats() {
+  const total = colItems.length;
+  const done = colItems.filter(x=>x.status==='done').length;
+  const pending = colItems.filter(x=>x.status==='pending'||x.status==='generating').length;
+  document.getElementById('col-total').textContent = total;
+  document.getElementById('col-done').textContent = done;
+  document.getElementById('col-pending').textContent = pending;
+}
+
+// ═══════════════════════════════════════
+// DODAWANIE / EDYCJA warstw
+// ═══════════════════════════════════════
+function showAddBase() {
+  const name = prompt('Nazwa bazy (np. "Królik bazowy"):');
+  if(!name) return;
+  const traitsRaw = prompt('Wpisz warianty bazy oddzielone przecinkami\n(np. biały,szary,brązowy,czarny,różowy,niebieski):','biały,szary,brązowy');
+  if(!traitsRaw) return;
+  const traits = traitsRaw.split(',').map(t=>t.trim()).filter(Boolean);
+  const layer = { id:colNextId(), type:'base', name, traits, createdAt:Date.now() };
+  colLayers.push(layer);
+  colSave();
+  renderCollection();
+  toast('Dodano bazę: '+name+' ('+traits.length+' wariantów) ✓');
+}
+
+function showAddLayer() {
+  const bases = colLayers.filter(l=>l.type==='base');
+  if(!bases.length) { toast('Najpierw dodaj bazowe NFT!','err'); return; }
+  const name = prompt('Nazwa warstwy cech (np. "Oczy", "Kapelusz", "Tło"):');
+  if(!name) return;
+  const traitsRaw = prompt('Wpisz cechy oddzielone przecinkami\n(np. laserowe,śpiące,gwiazdkowe,normalne,zezujące):', 'normalne,laserowe,śpiące');
+  if(!traitsRaw) return;
+  const traits = traitsRaw.split(',').map(t=>t.trim()).filter(Boolean);
+  const layer = { id:colNextId(), type:'layer', name, traits, createdAt:Date.now() };
+  colLayers.push(layer);
+  colSave();
+  renderCollection();
+  toast('Dodano warstwę: '+name+' ('+traits.length+' cech) ✓');
+}
+
+function editLayer(id) {
+  const layer = colLayers.find(l=>l.id===id); if(!layer) return;
+  const name = prompt('Nazwa:', layer.name);
+  if(!name) return;
+  const traitsRaw = prompt('Cechy (przecinkami):', layer.traits.join(','));
+  if(!traitsRaw) return;
+  layer.name = name;
+  layer.traits = traitsRaw.split(',').map(t=>t.trim()).filter(Boolean);
+  colSave();
+  renderCollection();
+  toast('Zaktualizowano: '+name+' ✓');
+}
+
+function deleteLayer(id) {
+  const layer = colLayers.find(l=>l.id===id); if(!layer) return;
+  if(!confirm('Usunąć warstwę "'+layer.name+'"? NFT tej warstwy pozostaną w Firebase.')) return;
+  colLayers = colLayers.filter(l=>l.id!==id);
+  if(activeColLayer===id) activeColLayer=null;
+  colSave();
+  renderCollection();
+  toast('Usunięto warstwę ✓');
+}
+
+// ═══════════════════════════════════════
+// SYNC warstwy do Firestore
+// ═══════════════════════════════════════
+async function colSyncLayer(layerId) {
+  if(!db) { toast('Brak Firebase','err'); return; }
+  const layer = colLayers.find(l=>l.id===layerId); if(!layer) return;
+  const bases = colLayers.filter(l=>l.type==='base');
+  if(!bases.length) { toast('Najpierw dodaj bazę!','err'); return; }
+
+  const basePrompt = document.getElementById('col-base-prompt').value;
+  const negPrompt  = document.getElementById('col-neg-prompt').value;
+  const strength   = parseFloat(document.getElementById('col-strength').value);
+  const imgSize    = parseInt(document.getElementById('col-size').value);
+  const modelId    = document.getElementById('col-model').value;
+
+  const existing   = await db.collection('col_items').where('layerId','==',layerId).get();
+  const existingIds = new Set(existing.docs.map(d=>d.id));
+
+  const batch = db.batch();
+  let addCount = 0;
+
+  if(layer.type==='base') {
+    // Generuj warianty bazy
+    layer.traits.forEach(trait => {
+      const docId = layerId+'_'+trait.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'-').toLowerCase();
+      if(existingIds.has(docId)) return;
+      const ref = db.collection('col_items').doc(docId);
+      batch.set(ref, {
+        name: layer.name+' — '+trait,
+        layerId, layerName: layer.name,
+        layerType: 'base',
+        trait, parentId: null,
+        basePrompt: `${basePrompt}, ${trait} color`,
+        negPrompt, strength:0, imgSize, modelId,
+        status: 'pending', imageUrl: null, prompt: null,
+        generationTime: null,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      addCount++;
+    });
+  } else {
+    // Generuj kombinacje: każda baza × każda cecha
+    const allBaseDocs = await db.collection('col_items').where('layerType','==','base').get();
+    const baseDocs = allBaseDocs.docs.filter(d=>d.data().status==='done');
+
+    if(!baseDocs.length) {
+      toast('Najpierw wygeneruj i zakończ bazowe NFT!','err');
+      return;
+    }
+
+    baseDocs.forEach(baseDoc => {
+      const baseData = baseDoc.data();
+      layer.traits.forEach(trait => {
+        const docId = baseDoc.id+'__'+layerId+'_'+trait.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'-').toLowerCase();
+        if(existingIds.has(docId)) return;
+        const ref = db.collection('col_items').doc(docId);
+        batch.set(ref, {
+          name: baseData.trait+' + '+layer.name+': '+trait,
+          layerId, layerName: layer.name,
+          layerType: 'layer',
+          trait,
+          parentId: baseDoc.id,
+          parentImageUrl: baseData.imageUrl,
+          basePrompt: `${basePrompt}, ${trait} ${layer.name.toLowerCase()}`,
+          negPrompt, strength, imgSize, modelId,
+          status: 'pending', imageUrl: null, prompt: null,
+          generationTime: null,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        addCount++;
+      });
+    });
+  }
+
+  if(!addCount) { toast('Wszystkie NFT tej warstwy już są w kolejce ✓'); return; }
+  await batch.commit();
+  toast('↑ Dodano '+addCount+' NFT do kolejki ✓');
+  log('Kolekcja sync: '+addCount+' NFT → Firebase ['+layer.name+']','ok');
+}
+
+async function colSyncAll() {
+  for(const layer of colLayers) {
+    await colSyncLayer(layer.id);
+    await new Promise(r=>setTimeout(r,200));
+  }
+  toast('Zsynchronizowano całą kolekcję ✓');
+}
+
+async function colDeleteAll() {
+  if(!db) return;
+  const snap = await db.collection('col_items').get();
+  if(!snap.docs.length) { toast('Kolekcja jest już pusta','err'); return; }
+  if(!confirm('Usunąć wszystkie '+snap.docs.length+' NFT kolekcji z Firebase?')) return;
+  const batch = db.batch();
+  snap.docs.forEach(d=>batch.delete(d.ref));
+  await batch.commit();
+  toast('Kolekcja wyczyszczona ✓');
+}
+
+function openColModal(id) {
+  const item = colItems.find(x=>x.id===id); if(!item) return;
+  curModal = item;
+  document.getElementById('m-name').textContent = item.name;
+  const img = document.getElementById('m-img');
+  const dl  = document.getElementById('m-dl');
+  if(item.imageUrl){img.src=item.imageUrl;img.style.display='block';dl.href=item.imageUrl;dl.style.display='';}
+  else{img.style.display='none';dl.style.display='none';}
+  document.getElementById('m-meta').innerHTML = `
+    <div class="mi"><div class="mk">Status</div><div class="mv">${item.status}</div></div>
+    <div class="mi"><div class="mk">Warstwa</div><div class="mv">${item.layerName||'—'}</div></div>
+    <div class="mi"><div class="mk">Cecha</div><div class="mv">${item.trait||'—'}</div></div>
+    <div class="mi"><div class="mk">Czas</div><div class="mv">${item.generationTime?item.generationTime+'s':'—'}</div></div>`;
+  document.getElementById('m-prompt').value = item.customPrompt||'';
+  document.getElementById('nft-modal').classList.add('open');
 }
 </script>
 </body>
