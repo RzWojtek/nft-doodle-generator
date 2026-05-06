@@ -316,6 +316,7 @@ hr.div{border:none;border-top:1px solid var(--border);margin:12px 0}
             <option value="name">A–Z</option>
           </select>
           <span class="gcnt" id="gcnt">0 obrazów</span>
+          <button class="btn danger sm" onclick="deleteAllItems()" style="margin-left:6px">🗑 Usuń wszystko</button>
         </div>
       </div>
       <div class="pb">
@@ -347,6 +348,7 @@ hr.div{border:none;border-top:1px solid var(--border);margin:12px 0}
       <div style="display:flex;gap:8px">
         <button class="btn primary" onclick="savePrompt()">💾 Zapisz i dodaj do kolejki</button>
         <a id="m-dl" class="btn" download style="display:none">⬇ PNG</a>
+        <button class="btn danger" onclick="deleteFromModal()">🗑 Usuń ten NFT</button>
       </div>
     </div>
   </div>
@@ -553,44 +555,42 @@ function loadCSV(e){
   r.readAsText(f);e.target.value='';
 }
 
-function nameToId(n){return n.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'-').toLowerCase();}
+function nameToId(n,presetId){const base=n.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'-').toLowerCase();return presetId?base+'_'+presetId:base;}
 
 async function syncToFirebase(){
   if(!db){toast('Brak połączenia z Firebase','err');return;}
+  if(!names.length){toast('Lista postaci jest pusta','err');return;}
   const p=PRESETS.find(x=>x.id===activePreset);
   const stylePrompt=document.getElementById('style-prompt').value;
   const negPrompt=document.getElementById('neg-prompt').value;
   const imgSize=parseInt(document.getElementById('img-size').value);
   const steps=parseInt(document.getElementById('steps').value);
-  if(!names.length){if(!confirm('Lista jest pusta — usunąć wszystkie wpisy z Firebase?'))return;}
-  const wantedIds=new Set(names.map(nameToId));
   const existing=await db.collection('nft_items').get();
   const existingIds=new Set(existing.docs.map(d=>d.id));
-  const toAdd=names.filter(n=>!existingIds.has(nameToId(n)));
-  const toDelete=existing.docs.filter(d=>!wantedIds.has(d.id));
-  const toUpdate=names.filter(n=>existingIds.has(nameToId(n)));
-  if(toDelete.length>0){
-    const delNames=toDelete.map(d=>d.data().name||d.id).join(', ');
-    if(!confirm('Usunąć '+toDelete.length+' postaci z Firebase?\n\n'+delNames))return;
-  }
+  const toAdd=names.filter(n=>!existingIds.has(nameToId(n,activePreset)));
+  if(!toAdd.length){toast('Wszystkie postaci już są w Firebase dla tego stylu','err');return;}
   try{
     const batch=db.batch();
     toAdd.forEach(name=>{
-      const ref=db.collection('nft_items').doc(nameToId(name));
+      const ref=db.collection('nft_items').doc(nameToId(name,activePreset));
       batch.set(ref,{name,status:'pending',createdAt:firebase.firestore.FieldValue.serverTimestamp(),imageUrl:null,prompt:null,generationTime:null,stylePrompt,negPrompt,presetId:activePreset,presetName:p?p.name:'custom',imgSize,steps});
     });
-    toUpdate.forEach(name=>{
-      const doc=existing.docs.find(d=>d.id===nameToId(name));
-      if(!doc)return;
-      const data=doc.data();
-      if(data.status==='done'||data.status==='generating')return;
-      batch.update(db.collection('nft_items').doc(nameToId(name)),{stylePrompt,negPrompt,presetId:activePreset,presetName:p?p.name:'custom',imgSize,steps});
-    });
-    toDelete.forEach(doc=>{batch.delete(doc.ref);});
     await batch.commit();
-    const msg='Sync: +'+toAdd.length+' nowych, ~'+toUpdate.length+' zaktualizowanych, -'+toDelete.length+' usuniętych';
+    const msg='Dodano '+toAdd.length+' nowych zadań ['+( p?p.name:'custom')+']';
     toast('✓ '+msg);log(msg,'ok');
   }catch(e){toast('Błąd sync: '+e.message,'err');log('Błąd sync: '+e.message,'err');}
+}
+
+async function deleteAllItems(){
+  if(!db)return;
+  const snap=await db.collection('nft_items').get();
+  if(!snap.docs.length){toast('Galeria jest już pusta','err');return;}
+  if(!confirm('Usunąć wszystkie '+snap.docs.length+' NFT z Firebase? Tej operacji nie można cofnąć.'))return;
+  const batch=db.batch();
+  snap.docs.forEach(d=>batch.delete(d.ref));
+  await batch.commit();
+  toast('Usunięto wszystkie NFT ✓');
+  log('Usunięto wszystkie '+snap.docs.length+' NFT z Firebase','ok');
 }
 
 function renderGallery(){
@@ -682,8 +682,15 @@ function savePrompt(){
 }
 
 function deleteItem(id){
-  if(!db||!confirm('Usunąć?'))return;
+  if(!db)return;
   db.collection('nft_items').doc(id).delete().then(()=>toast('Usunięto ✓')).catch(e=>toast('Błąd: '+e.message,'err'));
+}
+
+function deleteFromModal(){
+  if(!curModal||!db)return;
+  if(!confirm('Usunąć NFT: '+curModal.name+'?'))return;
+  deleteItem(curModal.id);
+  closeModal();
 }
 </script>
 </body>
