@@ -6,34 +6,23 @@
 <title>NFT Doodle Generator</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Rajdhani:wght@400;600;700&display=swap');
-:root {
-  --bg:#484862;--bg2:#3a3a52;--bg3:#2e2e44;--bg4:#252538;
-  --accent:#00e5ff;--accent2:#ff4ecd;--accent3:#b3ff6b;
-  --text:#e8e8ff;--text2:#9898c0;
-  --border:rgba(0,229,255,0.18);--card:rgba(0,0,0,0.25);
-  --ok:#b3ff6b;--err:#ff4e4e;--warn:#ffd166;
-}
+:root{--bg:#484862;--bg2:#3a3a52;--bg3:#2e2e44;--bg4:#252538;--accent:#00e5ff;--accent2:#ff4ecd;--accent3:#b3ff6b;--text:#e8e8ff;--text2:#9898c0;--border:rgba(0,229,255,0.18);--card:rgba(0,0,0,0.25);--ok:#b3ff6b;--err:#ff4e4e;--warn:#ffd166}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 40% at 10% 20%,rgba(0,229,255,0.06) 0%,transparent 60%),radial-gradient(ellipse 50% 50% at 90% 80%,rgba(255,78,205,0.06) 0%,transparent 60%);pointer-events:none;z-index:0}
 .grid-bg{position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
 .wrap{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:0 20px}
 
-/* LOGIN SCREEN */
+/* LOGIN */
 #login-screen{position:fixed;inset:0;background:var(--bg);z-index:500;display:flex;align-items:center;justify-content:center}
 #login-screen::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 40% at 10% 20%,rgba(0,229,255,0.06) 0%,transparent 60%),radial-gradient(ellipse 50% 50% at 90% 80%,rgba(255,78,205,0.06) 0%,transparent 60%);pointer-events:none}
-.login-box{background:rgba(0,0,0,0.35);border:1px solid var(--border);border-radius:16px;padding:48px 40px;text-align:center;max-width:380px;width:100%;position:relative;z-index:1;box-shadow:0 20px 60px rgba(0,0,0,0.4)}
+.login-box{background:rgba(0,0,0,0.35);border:1px solid var(--border);border-radius:16px;padding:48px 40px;text-align:center;max-width:380px;width:100%;position:relative;z-index:1}
 .login-logo{font-size:48px;margin-bottom:16px}
-.login-title{font-family:'Space Mono',monospace;font-size:20px;font-weight:700;color:var(--accent);margin-bottom:6px;letter-spacing:-0.5px}
+.login-title{font-family:'Space Mono',monospace;font-size:20px;font-weight:700;color:var(--accent);margin-bottom:6px}
 .login-sub{font-size:14px;color:var(--text2);margin-bottom:32px;line-height:1.5}
-.google-btn{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;padding:13px 20px;background:#fff;border:none;border-radius:8px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;color:#1f1f1f;transition:all .2s;letter-spacing:.3px}
+.google-btn{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;padding:13px 20px;background:#fff;border:none;border-radius:8px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;color:#1f1f1f;transition:all .2s}
 .google-btn:hover{background:#f5f5f5;box-shadow:0 4px 20px rgba(0,0,0,0.3);transform:translateY(-1px)}
 .google-btn svg{width:20px;height:20px;flex-shrink:0}
-.login-err{margin-top:16px;font-size:12px;color:var(--err);display:none}
-#access-denied{position:fixed;inset:0;background:var(--bg);z-index:500;display:none;align-items:center;justify-content:center}
-.denied-box{background:rgba(0,0,0,0.35);border:1px solid rgba(255,78,78,0.3);border-radius:16px;padding:40px;text-align:center;max-width:360px}
-.denied-box h2{font-family:'Space Mono',monospace;font-size:16px;color:var(--err);margin-bottom:12px}
-.denied-box p{font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.5}
 
 /* HEADER */
 header{border-bottom:1px solid var(--border);padding:14px 0;background:rgba(37,37,56,0.85);backdrop-filter:blur(12px);position:sticky;top:0;z-index:100}
@@ -49,7 +38,6 @@ header{border-bottom:1px solid var(--border);padding:14px 0;background:rgba(37,3
 .user-chip{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:20px;padding:4px 12px 4px 6px}
 .user-avatar{width:24px;height:24px;border-radius:50%;border:1px solid var(--border)}
 .user-name{font-size:12px;color:var(--text2)}
-
 .btn{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;padding:6px 14px;border-radius:6px;cursor:pointer;border:1px solid var(--accent);background:transparent;color:var(--accent);transition:all .2s;letter-spacing:.5px;text-transform:uppercase}
 .btn:hover{background:rgba(0,229,255,0.1)}
 .btn.primary{background:var(--accent);color:var(--bg4)}
@@ -59,7 +47,7 @@ header{border-bottom:1px solid var(--border);padding:14px 0;background:rgba(37,3
 .btn.sm{font-size:11px;padding:4px 10px}
 
 /* LAYOUT */
-.layout{display:grid;grid-template-columns:350px 1fr;gap:18px;padding:18px 0;min-height:calc(100vh - 66px)}
+.layout{display:grid;grid-template-columns:370px 1fr;gap:18px;padding:18px 0;min-height:calc(100vh - 66px)}
 .panel{background:var(--card);border:1px solid var(--border);border-radius:11px;overflow:hidden;margin-bottom:16px}
 .panel:last-child{margin-bottom:0}
 .ph{background:rgba(0,0,0,0.2);border-bottom:1px solid var(--border);padding:11px 16px;display:flex;align-items:center;justify-content:space-between}
@@ -69,7 +57,7 @@ header{border-bottom:1px solid var(--border);padding:14px 0;background:rgba(37,3
 label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin-bottom:5px}
 input[type=text],textarea,select{width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(0,229,255,0.18);border-radius:6px;padding:8px 11px;color:var(--text);font-family:'Rajdhani',sans-serif;font-size:13px;outline:none;transition:border-color .2s}
 input[type=text]:focus,textarea:focus,select:focus{border-color:var(--accent)}
-textarea{resize:vertical;min-height:76px;line-height:1.5}
+textarea{resize:vertical;min-height:72px;line-height:1.5}
 select option{background:var(--bg4)}
 .rw{display:flex;align-items:center;gap:10px}
 input[type=range]{flex:1;-webkit-appearance:none;height:3px;background:rgba(0,229,255,0.15);border-radius:4px;outline:none;border:none;padding:0}
@@ -78,7 +66,20 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 .cb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);cursor:pointer;margin-bottom:7px}
 .cb input{width:auto}
 
-.names-box{background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:6px;max-height:150px;overflow-y:auto;padding:6px}
+/* STYLE PRESET CARDS */
+.preset-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px}
+.preset-card{background:rgba(0,0,0,0.3);border:2px solid var(--border);border-radius:8px;padding:10px 12px;cursor:pointer;transition:all .2s;text-align:left}
+.preset-card:hover{border-color:rgba(0,229,255,0.4);background:rgba(0,229,255,0.05)}
+.preset-card.active{border-color:var(--accent);background:rgba(0,229,255,0.08);box-shadow:0 0 12px rgba(0,229,255,0.1)}
+.preset-icon{font-size:20px;margin-bottom:4px}
+.preset-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px}
+.preset-desc{font-size:10px;color:var(--text2);line-height:1.4}
+.preset-badge{display:inline-block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:1px 6px;border-radius:3px;margin-top:4px}
+.preset-badge.fast{background:rgba(179,255,107,.12);color:var(--ok)}
+.preset-badge.slow{background:rgba(255,209,102,.12);color:var(--warn)}
+
+/* NAMES */
+.names-box{background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:6px;max-height:140px;overflow-y:auto;padding:6px}
 .names-box::-webkit-scrollbar{width:3px}
 .names-box::-webkit-scrollbar-thumb{background:var(--border)}
 .ntag{display:inline-flex;align-items:center;gap:5px;background:rgba(0,229,255,0.07);border:1px solid rgba(0,229,255,0.18);border-radius:4px;padding:2px 8px 2px 9px;font-size:12px;margin:2px;color:var(--text)}
@@ -87,6 +88,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 .add-row{display:flex;gap:7px;margin-top:8px}
 .add-row input{flex:1}
 
+/* PROGRESS */
 .prog-hdr{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:6px}
 .pbar{height:5px;background:rgba(0,0,0,0.4);border-radius:3px;overflow:hidden;margin-bottom:5px}
 .pfill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width .5s ease}
@@ -99,13 +101,13 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 .log::-webkit-scrollbar-thumb{background:var(--border)}
 .ll{color:var(--text2)}.ll.ok{color:var(--ok)}.ll.err{color:var(--err)}.ll.info{color:var(--accent)}
 
+/* GALLERY */
 .gctrls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .tabs{display:flex;gap:4px}
 .tab{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:4px 11px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;transition:all .15s}
 .tab.on{border-color:var(--accent);color:var(--accent);background:rgba(0,229,255,0.07)}
 .ssort{background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:5px;padding:4px 9px;color:var(--text2);font-size:11px;cursor:pointer;outline:none;width:auto;font-family:'Rajdhani',sans-serif}
 .gcnt{font-family:'Space Mono',monospace;font-size:10px;color:var(--text2);margin-left:auto}
-
 .ggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;margin-top:12px}
 .ncard{background:var(--card);border:1px solid var(--border);border-radius:9px;overflow:hidden;transition:transform .2s,border-color .2s,box-shadow .2s;cursor:pointer;position:relative}
 .ncard:hover{transform:translateY(-2px);border-color:rgba(0,229,255,0.4);box-shadow:0 6px 22px rgba(0,0,0,0.3)}
@@ -128,10 +130,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 .ibt{width:24px;height:24px;border-radius:4px;background:rgba(37,37,56,.92);border:1px solid var(--border);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;transition:color .15s;text-decoration:none}
 .ibt:hover{color:var(--accent);border-color:rgba(0,229,255,.3)}
 .ibt.r:hover{color:var(--err);border-color:rgba(255,78,78,.3)}
-
 .empty{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text2)}
 .empty .ei{font-size:40px;margin-bottom:12px;opacity:.25}
 
+/* MODAL */
 .mbg{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .2s}
 .mbg.open{opacity:1;pointer-events:all}
 .modal{background:var(--bg3);border:1px solid rgba(0,229,255,.25);border-radius:13px;max-width:540px;width:100%;max-height:90vh;overflow-y:auto}
@@ -148,16 +150,19 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 .toast.show{transform:translateY(0);opacity:1}
 .toast.ok{border-color:rgba(179,255,107,.4)}
 .toast.err{border-color:rgba(255,78,78,.4)}
-
 hr.div{border:none;border-top:1px solid var(--border);margin:12px 0}
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-thumb{background:rgba(0,229,255,.18);border-radius:4px}
+
+/* ACTIVE PRESET INDICATOR */
+.active-preset-bar{background:rgba(0,229,255,0.06);border:1px solid rgba(0,229,255,0.2);border-radius:6px;padding:8px 12px;margin-bottom:14px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2)}
+.active-preset-bar strong{color:var(--accent)}
 </style>
 </head>
 <body>
 <div class="grid-bg"></div>
 
-<!-- LOGIN SCREEN -->
+<!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
     <div class="login-logo">✏️</div>
@@ -167,7 +172,6 @@ hr.div{border:none;border-top:1px solid var(--border);margin:12px 0}
       <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
       Zaloguj przez Google
     </button>
-    <div class="login-err" id="login-err">Wystąpił błąd logowania. Spróbuj ponownie.</div>
   </div>
 </div>
 
@@ -176,26 +180,19 @@ hr.div{border:none;border-top:1px solid var(--border);margin:12px 0}
   <div style="background:rgba(0,0,0,0.35);border:1px solid rgba(255,78,78,0.3);border-radius:16px;padding:40px;text-align:center;max-width:360px">
     <div style="font-size:40px;margin-bottom:14px">🚫</div>
     <h2 style="font-family:'Space Mono',monospace;font-size:15px;color:var(--err);margin-bottom:10px">Brak dostępu</h2>
-    <p style="font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.6">To konto nie ma uprawnień<br>do tej aplikacji.</p>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.6">To konto nie ma uprawnień do tej aplikacji.</p>
     <button class="btn danger" onclick="firebase.auth().signOut().then(()=>location.reload())">← Wyloguj</button>
   </div>
 </div>
 
-<!-- MAIN APP (hidden until logged in) -->
+<!-- APP -->
 <div id="app" style="display:none">
-
 <header>
 <div class="wrap">
   <div class="hdr">
-    <div class="logo">
-      <div class="logo-box">✏️</div>
-      NFT Doodle Generator
-    </div>
+    <div class="logo"><div class="logo-box">✏️</div>NFT Doodle Generator</div>
     <div class="status-row">
-      <div class="dot-wrap">
-        <div class="dot busy" id="fb-dot"></div>
-        <span id="fb-txt">Łączenie...</span>
-      </div>
+      <div class="dot-wrap"><div class="dot busy" id="fb-dot"></div><span id="fb-txt">Łączenie...</span></div>
       <div style="width:1px;height:13px;background:var(--border)"></div>
       <span id="hdr-cnt" style="font-family:'Space Mono',monospace;font-size:11px">0 / 0 NFT</span>
     </div>
@@ -216,23 +213,50 @@ hr.div{border:none;border-top:1px solid var(--border);margin:12px 0}
 
   <!-- LEFT -->
   <div>
+
+    <!-- STYL GENEROWANIA -->
     <div class="panel">
-      <div class="ph"><span class="pt">📊 Postęp</span></div>
+      <div class="ph"><span class="pt">🎨 Styl generowania</span></div>
       <div class="pb">
-        <div class="prog-hdr">
-          <span id="prog-lbl">Oczekiwanie...</span>
-          <span id="prog-pct" style="font-family:'Space Mono',monospace;color:var(--accent)">0%</span>
+        <div class="active-preset-bar" id="active-bar">
+          Aktualny styl: <strong id="active-name">Brak wyboru</strong>
         </div>
-        <div class="pbar"><div class="pfill" id="pfill" style="width:0%"></div></div>
-        <div class="stats">
-          <div class="sbox"><span class="sv" id="s-done">0</span><span class="sl">Gotowe</span></div>
-          <div class="sbox"><span class="sv" id="s-left" style="color:var(--warn)">0</span><span class="sl">Kolejka</span></div>
-          <div class="sbox"><span class="sv" id="s-err" style="color:var(--err)">0</span><span class="sl">Błędy</span></div>
+        <div class="preset-grid" id="preset-grid"></div>
+        <hr class="div">
+        <div class="fg">
+          <label>Prompt stylu <span style="color:var(--text2);font-weight:400;text-transform:none;letter-spacing:0">(edytowalny)</span></label>
+          <textarea id="style-prompt" rows="3"></textarea>
         </div>
-        <div class="log" id="log"></div>
+        <div class="fg">
+          <label>Negative prompt</label>
+          <input type="text" id="neg-prompt">
+        </div>
+        <div class="fg">
+          <label>Rozmiar obrazu</label>
+          <select id="img-size">
+            <option value="512">512 × 512 (szybko ~3 min)</option>
+            <option value="768" selected>768 × 768 (~5 min)</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Kroki generowania (steps)</label>
+          <div class="rw">
+            <input type="range" id="steps" min="2" max="8" value="4" oninput="document.getElementById('sv').textContent=this.value">
+            <span class="rv" id="sv">4</span>
+          </div>
+        </div>
+        <div class="fg">
+          <label>Przerwa między obrazami (s)</label>
+          <div class="rw">
+            <input type="range" id="delay" min="2" max="60" value="5" oninput="document.getElementById('dv').textContent=this.value+'s'">
+            <span class="rv" id="dv">5s</span>
+          </div>
+        </div>
+        <label class="cb"><input type="checkbox" id="auto-retry" checked> Auto-retry przy błędzie</label>
       </div>
     </div>
 
+    <!-- LISTA POSTACI -->
     <div class="panel">
       <div class="ph">
         <span class="pt">👤 Lista postaci</span>
@@ -254,45 +278,27 @@ hr.div{border:none;border-top:1px solid var(--border);margin:12px 0}
       </div>
     </div>
 
+    <!-- POSTĘP -->
     <div class="panel">
-      <div class="ph"><span class="pt">🎨 Ustawienia obrazu</span></div>
+      <div class="ph"><span class="pt">📊 Postęp</span></div>
       <div class="pb">
-        <div class="fg">
-          <label>Styl (prompt doklejany do każdego)</label>
-          <textarea id="style-prompt">crude hand-drawn MS Paint style portrait, doodle art, rough sketch lines, simple colors, white background, NFT art, no background details</textarea>
+        <div class="prog-hdr">
+          <span id="prog-lbl">Oczekiwanie...</span>
+          <span id="prog-pct" style="font-family:'Space Mono',monospace;color:var(--accent)">0%</span>
         </div>
-        <div class="fg">
-          <label>Negative prompt</label>
-          <input type="text" id="neg-prompt" value="realistic, photo, 3d, detailed, blurry, watermark">
+        <div class="pbar"><div class="pfill" id="pfill" style="width:0%"></div></div>
+        <div class="stats">
+          <div class="sbox"><span class="sv" id="s-done">0</span><span class="sl">Gotowe</span></div>
+          <div class="sbox"><span class="sv" id="s-left" style="color:var(--warn)">0</span><span class="sl">Kolejka</span></div>
+          <div class="sbox"><span class="sv" id="s-err" style="color:var(--err)">0</span><span class="sl">Błędy</span></div>
         </div>
-        <div class="fg">
-          <label>Rozmiar obrazu</label>
-          <select id="img-size">
-            <option value="512">512 × 512 (szybko)</option>
-            <option value="768" selected>768 × 768</option>
-            <option value="1024">1024 × 1024 (wolno)</option>
-          </select>
-        </div>
-        <div class="fg">
-          <label>Kroki generowania</label>
-          <div class="rw">
-            <input type="range" id="steps" min="2" max="8" value="4" oninput="document.getElementById('sv').textContent=this.value">
-            <span class="rv" id="sv">4</span>
-          </div>
-        </div>
-        <div class="fg">
-          <label>Przerwa między obrazami (s)</label>
-          <div class="rw">
-            <input type="range" id="delay" min="2" max="60" value="5" oninput="document.getElementById('dv').textContent=this.value+'s'">
-            <span class="rv" id="dv">5s</span>
-          </div>
-        </div>
-        <label class="cb"><input type="checkbox" id="auto-retry" checked> Auto-retry przy błędzie</label>
+        <div class="log" id="log"></div>
       </div>
     </div>
+
   </div>
 
-  <!-- RIGHT -->
+  <!-- RIGHT — GALERIA -->
   <div>
     <div class="panel">
       <div class="ph">
@@ -314,7 +320,7 @@ hr.div{border:none;border-top:1px solid var(--border);margin:12px 0}
       </div>
       <div class="pb">
         <div class="ggrid" id="ggrid">
-          <div class="empty"><div class="ei">✏️</div><p>Galeria pusta</p><p style="font-size:11px">Dodaj postaci → Sync → uruchom bota na VPS</p></div>
+          <div class="empty"><div class="ei">✏️</div><p>Galeria pusta</p><p style="font-size:11px">Wybierz styl → dodaj postaci → Sync → uruchom bota</p></div>
         </div>
       </div>
     </div>
@@ -322,7 +328,6 @@ hr.div{border:none;border-top:1px solid var(--border);margin:12px 0}
 
 </div>
 </div>
-
 </div><!-- #app -->
 
 <!-- NFT MODAL -->
@@ -336,8 +341,8 @@ hr.div{border:none;border-top:1px solid var(--border);margin:12px 0}
       <img id="m-img" class="mimg" src="" alt="" style="display:none">
       <div class="mmeta" id="m-meta"></div>
       <div class="fg">
-        <label>Własny prompt (opcjonalnie — zostaw puste dla domyślnego)</label>
-        <textarea id="m-prompt" rows="3" placeholder="np. portrait of Elon Musk as a pirate..."></textarea>
+        <label>Własny prompt dla tej postaci (opcjonalnie)</label>
+        <textarea id="m-prompt" rows="3" placeholder="Zostaw puste = użyj domyślnego stylu"></textarea>
       </div>
       <div style="display:flex;gap:8px">
         <button class="btn primary" onclick="savePrompt()">💾 Zapisz i dodaj do kolejki</button>
@@ -349,14 +354,13 @@ hr.div{border:none;border-top:1px solid var(--border);margin:12px 0}
 
 <div class="toast" id="toast"></div>
 
-<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
 <script>
 // ═══════════════════════════════════════
-// KONFIGURACJA — wbudowana na stałe
+// KONFIGURACJA
 // ═══════════════════════════════════════
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyCgso6XvcVSTnDTO0DTScNp3lTcM8Fyim8",
@@ -367,184 +371,234 @@ const FIREBASE_CONFIG = {
   appId: "1:646350722895:web:906f8b807f34812620173a"
 };
 const ALLOWED_EMAIL = "wojciech.rz81@gmail.com";
-// ═══════════════════════════════════════
 
+// ═══════════════════════════════════════
+// STYLE / MODELE — 4 presets
+// ═══════════════════════════════════════
+const PRESETS = [
+  {
+    id: "mspaint",
+    icon: "🖌️",
+    name: "MS Paint Doodle",
+    desc: "Prymitywny, dziecięcy styl rysowania w Paint",
+    badge: "fast",
+    badgeText: "~4 min/obraz",
+    prompt: "MSPaint drawing, very crude childish portrait, amateur scribble, badly drawn face, rough wobbly lines, flat solid colors, MS Paint style, no shading, simple shapes, white background, ugly on purpose, kindergarten drawing",
+    negative: "professional, detailed, realistic, beautiful, high quality, shading, artistic, illustration, sketch art, fine lines, photorealistic, 3d, render, masterpiece, best quality"
+  },
+  {
+    id: "crayon",
+    icon: "🖍️",
+    name: "Kredkowy Szkic",
+    desc: "Rysunek kredkami jak dziecko w szkole podstawowej",
+    badge: "fast",
+    badgeText: "~4 min/obraz",
+    prompt: "crayon drawing portrait, child's drawing, scribbled face, kindergarten art style, waxy crayon strokes, uneven outlines, bright flat colors, naive art, primitive portrait, white paper background, hand-drawn childish style",
+    negative: "professional, realistic, detailed, beautiful, high quality, digital art, 3d, render, photorealistic, artistic, fine art, masterpiece, illustration"
+  },
+  {
+    id: "stickfigure",
+    icon: "🕴️",
+    name: "Stick Figure Plus",
+    desc: "Prymitywna postać z głową i twarzą, prosty szkic",
+    badge: "fast",
+    badgeText: "~4 min/obraz",
+    prompt: "primitive stick figure portrait, rough head circle, two dot eyes, line mouth, simple nose scribble, badly drawn hair, crude sketchy style, black pen on white paper, child drawing, very simple shapes, amateur doodle",
+    negative: "professional, realistic, detailed, beautiful, high quality, artistic, photorealistic, fine art, 3d, render, illustration, complex, shading"
+  },
+  {
+    id: "notebook",
+    icon: "📓",
+    name: "Zeszyt Szkolny",
+    desc: "Portret narysowany długopisem w zeszycie podczas lekcji",
+    badge: "slow",
+    badgeText: "~5 min/obraz",
+    prompt: "ballpoint pen doodle portrait, drawn in school notebook, bored student sketch, rough pen scribbles, uneven hatching, simple face outline, messy hair lines, casual quick sketch, blue ink on white paper, imperfect proportions, spontaneous drawing",
+    negative: "professional, detailed, realistic, beautiful, digital art, 3d, render, photorealistic, masterpiece, fine art, high quality illustration"
+  }
+];
+
+// ═══════════════════════════════════════
 const SAMPLES = ["Elon Musk","Taylor Swift","Donald Trump","Cristiano Ronaldo","Kylie Jenner","MrBeast","Joe Biden","Rihanna","Jeff Bezos","Ariana Grande"];
 let names = JSON.parse(localStorage.getItem('nft-names')||'[]');
 let allItems = [];
 let curFilter = 'all';
 let curModal = null;
 let db = null;
+let activePreset = localStorage.getItem('nft-preset') || 'mspaint';
 
 firebase.initializeApp(FIREBASE_CONFIG);
 const auth = firebase.auth();
 const provider = new firebase.auth.GoogleAuthProvider();
 
-function signInGoogle() {
-  auth.signInWithPopup(provider).catch(e => {
-    document.getElementById('login-err').style.display = 'block';
-    console.error(e);
-  });
-}
-
-function signOut() {
-  auth.signOut().then(() => location.reload());
-}
+function signInGoogle() { auth.signInWithPopup(provider).catch(e => console.error(e)); }
+function signOut() { auth.signOut().then(() => location.reload()); }
 
 auth.onAuthStateChanged(user => {
-  if (!user) {
-    document.getElementById('login-screen').style.display = 'flex';
-    document.getElementById('access-denied').style.display = 'none';
-    document.getElementById('app').style.display = 'none';
-    return;
-  }
-  if (user.email !== ALLOWED_EMAIL) {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('access-denied').style.display = 'flex';
-    document.getElementById('app').style.display = 'none';
-    return;
-  }
-  // Dostęp przyznany
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('access-denied').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  document.getElementById('user-name').textContent = user.displayName || user.email;
-  if (user.photoURL) document.getElementById('user-avatar').src = user.photoURL;
+  if (!user) { document.getElementById('login-screen').style.display='flex'; document.getElementById('app').style.display='none'; return; }
+  if (user.email !== ALLOWED_EMAIL) { document.getElementById('login-screen').style.display='none'; document.getElementById('access-denied').style.display='flex'; return; }
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('access-denied').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('user-name').textContent = user.displayName||user.email;
+  if(user.photoURL) document.getElementById('user-avatar').src = user.photoURL;
   initApp();
 });
 
 function initApp() {
   db = firebase.firestore();
+  renderPresets();
+  applyPreset(activePreset, false);
   renderNames();
   loadSettings();
   startListener();
-  log('Zalogowano. Nasłuchuję Firebase...', 'info');
+  log('Zalogowano. Nasłuchuję Firebase...','info');
+}
+
+function renderPresets() {
+  const grid = document.getElementById('preset-grid');
+  grid.innerHTML = PRESETS.map(p => `
+    <div class="preset-card ${p.id===activePreset?'active':''}" id="pc-${p.id}" onclick="applyPreset('${p.id}',true)">
+      <div class="preset-icon">${p.icon}</div>
+      <div class="preset-name">${p.name}</div>
+      <div class="preset-desc">${p.desc}</div>
+      <span class="preset-badge ${p.badge}">${p.badgeText}</span>
+    </div>
+  `).join('');
+}
+
+function applyPreset(id, save) {
+  const p = PRESETS.find(x=>x.id===id);
+  if(!p) return;
+  activePreset = id;
+  document.getElementById('style-prompt').value = p.prompt;
+  document.getElementById('neg-prompt').value = p.negative;
+  document.getElementById('active-name').textContent = p.icon+' '+p.name;
+  document.querySelectorAll('.preset-card').forEach(c=>c.classList.remove('active'));
+  const card = document.getElementById('pc-'+id);
+  if(card) card.classList.add('active');
+  if(save) {
+    localStorage.setItem('nft-preset', id);
+    saveSettings();
+    toast('Styl zmieniony na: '+p.name+' ✓');
+    log('Zmieniono styl na: '+p.name,'info');
+  }
 }
 
 function startListener() {
-  db.collection('nft_items').orderBy('createdAt','desc')
-    .onSnapshot(snap => {
-      document.getElementById('fb-dot').className = 'dot';
-      document.getElementById('fb-txt').textContent = 'Firebase Online';
-      allItems = snap.docs.map(d => ({id: d.id, ...d.data()}));
-      renderGallery();
-      updateStats();
-    }, err => {
-      document.getElementById('fb-dot').className = 'dot off';
-      document.getElementById('fb-txt').textContent = 'Błąd połączenia';
-      log('Błąd Firestore: ' + err.message, 'err');
-    });
-}
-
-function log(msg, type='') {
-  const b = document.getElementById('log');
-  const t = new Date().toLocaleTimeString('pl-PL');
-  const d = document.createElement('div');
-  d.className = 'll ' + type;
-  d.textContent = `[${t}] ${msg}`;
-  b.appendChild(d);
-  b.scrollTop = b.scrollHeight;
-}
-
-function toast(msg, type='ok') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast show ' + type;
-  setTimeout(() => t.className = 'toast', 3000);
-}
-
-function loadSettings() {
-  const s = JSON.parse(localStorage.getItem('nft-settings')||'{}');
-  if(s.stylePrompt) document.getElementById('style-prompt').value = s.stylePrompt;
-  if(s.negPrompt) document.getElementById('neg-prompt').value = s.negPrompt;
-  if(s.imgSize) document.getElementById('img-size').value = s.imgSize;
-  if(s.steps) { document.getElementById('steps').value = s.steps; document.getElementById('sv').textContent = s.steps; }
-  if(s.delay) { document.getElementById('delay').value = s.delay; document.getElementById('dv').textContent = s.delay+'s'; }
-}
-
-['style-prompt','neg-prompt','img-size','steps','delay'].forEach(id => {
-  document.getElementById(id)?.addEventListener('change', () => {
-    localStorage.setItem('nft-settings', JSON.stringify({
-      stylePrompt: document.getElementById('style-prompt').value,
-      negPrompt: document.getElementById('neg-prompt').value,
-      imgSize: document.getElementById('img-size').value,
-      steps: document.getElementById('steps').value,
-      delay: document.getElementById('delay').value
-    }));
+  db.collection('nft_items').orderBy('createdAt','desc').onSnapshot(snap => {
+    document.getElementById('fb-dot').className='dot';
+    document.getElementById('fb-txt').textContent='Firebase Online';
+    allItems = snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderGallery(); updateStats();
+  }, err => {
+    document.getElementById('fb-dot').className='dot off';
+    document.getElementById('fb-txt').textContent='Błąd połączenia';
+    log('Błąd Firestore: '+err.message,'err');
   });
+}
+
+function log(msg,type=''){
+  const b=document.getElementById('log');
+  const t=new Date().toLocaleTimeString('pl-PL');
+  const d=document.createElement('div');
+  d.className='ll '+type; d.textContent=`[${t}] ${msg}`;
+  b.appendChild(d); b.scrollTop=b.scrollHeight;
+}
+
+function toast(msg,type='ok'){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast show '+type;
+  setTimeout(()=>t.className='toast',3000);
+}
+
+function loadSettings(){
+  const s=JSON.parse(localStorage.getItem('nft-settings')||'{}');
+  if(s.imgSize) document.getElementById('img-size').value=s.imgSize;
+  if(s.steps){document.getElementById('steps').value=s.steps;document.getElementById('sv').textContent=s.steps;}
+  if(s.delay){document.getElementById('delay').value=s.delay;document.getElementById('dv').textContent=s.delay+'s';}
+}
+
+function saveSettings(){
+  localStorage.setItem('nft-settings',JSON.stringify({
+    imgSize:document.getElementById('img-size').value,
+    steps:document.getElementById('steps').value,
+    delay:document.getElementById('delay').value,
+    stylePrompt:document.getElementById('style-prompt').value,
+    negPrompt:document.getElementById('neg-prompt').value
+  }));
+}
+['img-size','steps','delay','style-prompt','neg-prompt'].forEach(id=>{
+  document.getElementById(id)?.addEventListener('change',saveSettings);
 });
 
-function renderNames() {
-  const box = document.getElementById('names-box');
-  if(!box) return;
-  box.innerHTML = names.map(n => `<span class="ntag">${n}<span class="x" onclick="removeName('${n.replace(/'/g,"\\'")}')">×</span></span>`).join('');
-  document.getElementById('names-cnt').textContent = names.length;
-  localStorage.setItem('nft-names', JSON.stringify(names));
+function renderNames(){
+  const box=document.getElementById('names-box'); if(!box) return;
+  box.innerHTML=names.map(n=>`<span class="ntag">${n}<span class="x" onclick="removeName('${n.replace(/'/g,"\\'")}')">×</span></span>`).join('');
+  document.getElementById('names-cnt').textContent=names.length;
+  localStorage.setItem('nft-names',JSON.stringify(names));
+}
+function addName(){
+  const inp=document.getElementById('new-name'); const v=inp.value.trim(); if(!v) return;
+  if(names.includes(v)){toast('Już na liście','err');return;}
+  names.push(v); inp.value=''; renderNames();
+}
+function removeName(n){names=names.filter(x=>x!==n);renderNames();}
+function clearNames(){if(!confirm('Wyczyścić listę?'))return;names=[];renderNames();}
+function addSamples(){SAMPLES.forEach(n=>{if(!names.includes(n))names.push(n);});renderNames();toast('Dodano 10 celebrytów ✓');}
+function loadCSV(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{ev.target.result.split(/\r?\n/).map(l=>l.replace(/['"]/g,'').split(',')[0].trim()).filter(Boolean).forEach(n=>{if(!names.includes(n))names.push(n);});renderNames();toast('CSV załadowany ✓');};
+  r.readAsText(f);e.target.value='';
 }
 
-function addName() {
-  const inp = document.getElementById('new-name');
-  const v = inp.value.trim(); if(!v) return;
-  if(names.includes(v)) { toast('Już na liście', 'err'); return; }
-  names.push(v); inp.value = ''; renderNames();
-}
-function removeName(n) { names = names.filter(x=>x!==n); renderNames(); }
-function clearNames() { if(!confirm('Wyczyścić listę?')) return; names = []; renderNames(); }
-function addSamples() { SAMPLES.forEach(n => { if(!names.includes(n)) names.push(n); }); renderNames(); toast('Dodano 10 celebrytów ✓'); }
-function loadCSV(e) {
-  const f = e.target.files[0]; if(!f) return;
-  const r = new FileReader();
-  r.onload = ev => {
-    ev.target.result.split(/\r?\n/).map(l=>l.replace(/['"]/g,'').split(',')[0].trim()).filter(Boolean).forEach(n=>{ if(!names.includes(n)) names.push(n); });
-    renderNames(); toast('CSV załadowany ✓');
-  };
-  r.readAsText(f); e.target.value='';
-}
-
-function syncToFirebase() {
-  if(!db) { toast('Brak połączenia z Firebase', 'err'); return; }
-  if(!names.length) { toast('Lista postaci jest pusta', 'err'); return; }
-  const batch = db.batch();
-  names.forEach(name => {
-    const ref = db.collection('nft_items').doc(name.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'-').toLowerCase());
-    batch.set(ref, {
-      name,
-      status: 'pending',
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      imageUrl: null,
-      prompt: null,
-      generationTime: null,
-      stylePrompt: document.getElementById('style-prompt').value,
-      negPrompt: document.getElementById('neg-prompt').value,
-      imgSize: parseInt(document.getElementById('img-size').value),
-      steps: parseInt(document.getElementById('steps').value)
-    }, {merge: true});
+function syncToFirebase(){
+  if(!db){toast('Brak połączenia z Firebase','err');return;}
+  if(!names.length){toast('Lista postaci jest pusta','err');return;}
+  const p=PRESETS.find(x=>x.id===activePreset);
+  const stylePrompt=document.getElementById('style-prompt').value;
+  const negPrompt=document.getElementById('neg-prompt').value;
+  const batch=db.batch();
+  names.forEach(name=>{
+    const ref=db.collection('nft_items').doc(name.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'-').toLowerCase());
+    batch.set(ref,{
+      name, status:'pending',
+      createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+      imageUrl:null, prompt:null, generationTime:null,
+      stylePrompt, negPrompt,
+      presetId:activePreset,
+      presetName:p?p.name:'custom',
+      imgSize:parseInt(document.getElementById('img-size').value),
+      steps:parseInt(document.getElementById('steps').value)
+    },{merge:true});
   });
   batch.commit()
-    .then(() => { toast(`✓ Zsynchronizowano ${names.length} postaci`); log(`Sync: ${names.length} postaci → Firebase`, 'ok'); })
-    .catch(e => toast('Błąd sync: '+e.message, 'err'));
+    .then(()=>{toast(`✓ Zsynchronizowano ${names.length} postaci`);log(`Sync: ${names.length} postaci → Firebase [styl: ${p?p.name:'custom'}]`,'ok');})
+    .catch(e=>toast('Błąd sync: '+e.message,'err'));
 }
 
-function renderGallery() {
-  const grid = document.getElementById('ggrid'); if(!grid) return;
-  const sort = document.querySelector('.ssort')?.value || 'newest';
-  let items = curFilter === 'all' ? [...allItems] : allItems.filter(x=>x.status===curFilter);
-  if(sort==='oldest') items.sort((a,b)=>(a.createdAt?.seconds||0)-(b.createdAt?.seconds||0));
-  else if(sort==='name') items.sort((a,b)=>a.name.localeCompare(b.name));
-  document.getElementById('gcnt').textContent = items.length + ' obrazów';
-  document.getElementById('hdr-cnt').textContent = `${allItems.filter(x=>x.status==='done').length} / ${allItems.length} NFT`;
-  if(!items.length) {
-    grid.innerHTML = `<div class="empty"><div class="ei">✏️</div><p>Brak wyników</p><p style="font-size:11px">Dodaj postaci → ↑ Sync → uruchom bota na VPS</p></div>`;
+function renderGallery(){
+  const grid=document.getElementById('ggrid');if(!grid)return;
+  const sort=document.querySelector('.ssort')?.value||'newest';
+  let items=curFilter==='all'?[...allItems]:allItems.filter(x=>x.status===curFilter);
+  if(sort==='oldest')items.sort((a,b)=>(a.createdAt?.seconds||0)-(b.createdAt?.seconds||0));
+  else if(sort==='name')items.sort((a,b)=>a.name.localeCompare(b.name));
+  document.getElementById('gcnt').textContent=items.length+' obrazów';
+  document.getElementById('hdr-cnt').textContent=`${allItems.filter(x=>x.status==='done').length} / ${allItems.length} NFT`;
+  if(!items.length){
+    grid.innerHTML=`<div class="empty"><div class="ei">✏️</div><p>Brak wyników</p><p style="font-size:11px">Wybierz styl → Sync → uruchom bota na VPS</p></div>`;
     return;
   }
-  grid.innerHTML = items.map(item => {
-    const lbl = {done:'Gotowe',pending:'Czeka',generating:'Generuje...',error:'Błąd'}[item.status]||item.status;
-    const t = item.generationTime ? item.generationTime+'s' : '—';
-    const imgHtml = item.imageUrl
-      ? `<img src="${item.imageUrl}" alt="${item.name}" loading="lazy">`
-      : item.status==='generating'
-        ? `<div class="nph"><div class="spin"></div><span>Generowanie...</span></div>`
-        : `<div class="nph" style="font-size:24px;opacity:.2">🎨</div>`;
+  grid.innerHTML=items.map(item=>{
+    const lbl={done:'Gotowe',pending:'Czeka',generating:'Generuje...',error:'Błąd'}[item.status]||item.status;
+    const t=item.generationTime?item.generationTime+'s':'—';
+    const styleBadge=item.presetName?`<span style="font-size:9px;color:var(--text2)">${item.presetName}</span>`:'';
+    const imgHtml=item.imageUrl
+      ?`<img src="${item.imageUrl}" alt="${item.name}" loading="lazy">`
+      :item.status==='generating'
+        ?`<div class="nph"><div class="spin"></div><span>Generowanie...</span></div>`
+        :`<div class="nph" style="font-size:24px;opacity:.2">🎨</div>`;
     return `<div class="ncard" onclick="openModal('${item.id}')">
       <div class="nacts" onclick="event.stopPropagation()">
         ${item.imageUrl?`<a class="ibt" href="${item.imageUrl}" download="${item.name}.png" target="_blank">⬇</a>`:''}
@@ -554,64 +608,66 @@ function renderGallery() {
       <div class="ninfo">
         <div class="nname">${item.name}</div>
         <div class="nmeta"><span class="nst ${item.status}">${lbl}</span><span class="ntime">${t}</span></div>
+        ${styleBadge}
       </div>
     </div>`;
   }).join('');
 }
 
-function updateStats() {
-  const done = allItems.filter(x=>x.status==='done').length;
-  const err = allItems.filter(x=>x.status==='error').length;
-  const left = allItems.filter(x=>x.status==='pending'||x.status==='generating').length;
-  const total = allItems.length;
-  const pct = total>0 ? Math.round((done/total)*100) : 0;
-  document.getElementById('s-done').textContent = done;
-  document.getElementById('s-left').textContent = left;
-  document.getElementById('s-err').textContent = err;
-  document.getElementById('pfill').style.width = pct+'%';
-  document.getElementById('prog-pct').textContent = pct+'%';
-  document.getElementById('prog-lbl').textContent = total===0?'Oczekiwanie...':left>0?'Bot generuje...':'Zakończono ✓';
+function updateStats(){
+  const done=allItems.filter(x=>x.status==='done').length;
+  const err=allItems.filter(x=>x.status==='error').length;
+  const left=allItems.filter(x=>x.status==='pending'||x.status==='generating').length;
+  const total=allItems.length;
+  const pct=total>0?Math.round((done/total)*100):0;
+  document.getElementById('s-done').textContent=done;
+  document.getElementById('s-left').textContent=left;
+  document.getElementById('s-err').textContent=err;
+  document.getElementById('pfill').style.width=pct+'%';
+  document.getElementById('prog-pct').textContent=pct+'%';
+  document.getElementById('prog-lbl').textContent=total===0?'Oczekiwanie...':left>0?'Bot generuje...':'Zakończono ✓';
 }
 
-function setFilter(f, btn) {
-  curFilter = f;
+function setFilter(f,btn){
+  curFilter=f;
   document.querySelectorAll('.tabs .tab').forEach(t=>t.classList.remove('on'));
   btn.classList.add('on');
   renderGallery();
 }
 
-function openModal(id) {
-  const item = allItems.find(x=>x.id===id); if(!item) return;
-  curModal = item;
-  document.getElementById('m-name').textContent = item.name;
-  const img = document.getElementById('m-img');
-  const dl = document.getElementById('m-dl');
-  if(item.imageUrl) { img.src=item.imageUrl; img.style.display='block'; dl.href=item.imageUrl; dl.style.display=''; }
-  else { img.style.display='none'; dl.style.display='none'; }
-  document.getElementById('m-meta').innerHTML = `
+function openModal(id){
+  const item=allItems.find(x=>x.id===id);if(!item)return;
+  curModal=item;
+  document.getElementById('m-name').textContent=item.name;
+  const img=document.getElementById('m-img');
+  const dl=document.getElementById('m-dl');
+  if(item.imageUrl){img.src=item.imageUrl;img.style.display='block';dl.href=item.imageUrl;dl.style.display='';}
+  else{img.style.display='none';dl.style.display='none';}
+  document.getElementById('m-meta').innerHTML=`
     <div class="mi"><div class="mk">Status</div><div class="mv">${item.status||'—'}</div></div>
     <div class="mi"><div class="mk">Czas</div><div class="mv">${item.generationTime?item.generationTime+'s':'—'}</div></div>
+    <div class="mi"><div class="mk">Styl</div><div class="mv">${item.presetName||'—'}</div></div>
     <div class="mi" style="grid-column:1/-1"><div class="mk">Prompt</div><div class="mv" style="font-size:11px;font-weight:400;color:var(--text2)">${item.prompt||'—'}</div></div>`;
-  document.getElementById('m-prompt').value = item.customPrompt||'';
+  document.getElementById('m-prompt').value=item.customPrompt||'';
   document.getElementById('nft-modal').classList.add('open');
 }
 
-function closeModal(e) {
-  if(e && e.target!==document.getElementById('nft-modal')) return;
+function closeModal(e){
+  if(e&&e.target!==document.getElementById('nft-modal'))return;
   document.getElementById('nft-modal').classList.remove('open');
-  curModal = null;
+  curModal=null;
 }
 
-function savePrompt() {
-  if(!curModal||!db) return;
-  const prompt = document.getElementById('m-prompt').value.trim();
-  db.collection('nft_items').doc(curModal.id).update({customPrompt:prompt||null, status:'pending', imageUrl:null})
-    .then(()=>{ toast('Dodano do kolejki ✓'); closeModal(); })
+function savePrompt(){
+  if(!curModal||!db)return;
+  const prompt=document.getElementById('m-prompt').value.trim();
+  db.collection('nft_items').doc(curModal.id).update({customPrompt:prompt||null,status:'pending',imageUrl:null})
+    .then(()=>{toast('Dodano do kolejki ✓');closeModal();})
     .catch(e=>toast('Błąd: '+e.message,'err'));
 }
 
-function deleteItem(id) {
-  if(!db||!confirm('Usunąć?')) return;
+function deleteItem(id){
+  if(!db||!confirm('Usunąć?'))return;
   db.collection('nft_items').doc(id).delete().then(()=>toast('Usunięto ✓')).catch(e=>toast('Błąd: '+e.message,'err'));
 }
 </script>
