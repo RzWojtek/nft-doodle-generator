@@ -87,6 +87,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 .ntag .x:hover{color:var(--err)}
 .add-row{display:flex;gap:7px;margin-top:8px}
 .add-row input{flex:1}
+.name-item{display:flex;align-items:center;gap:6px;background:rgba(0,0,0,0.2);border:1px solid var(--border);border-radius:5px;padding:4px 8px;margin-bottom:4px}
+.name-item .nname{flex:1;font-size:12px;color:var(--text)}
+.name-photo{width:28px;height:28px;border-radius:3px;object-fit:cover;border:1px solid var(--border)}
+.name-photo-placeholder{width:28px;height:28px;border-radius:3px;border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;color:var(--text2);flex-shrink:0}
+.name-photo-placeholder:hover{border-color:var(--accent);color:var(--accent)}
 
 /* PROGRESS */
 .prog-hdr{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:6px}
@@ -730,22 +735,35 @@ function saveSettings(){
 
 function renderNames(){
   const box=document.getElementById('names-box'); if(!box) return;
-  box.innerHTML=names.map(n=>`<span class="ntag">${n}<span class="x" onclick="removeName('${n.replace(/'/g,"\\'")}')">×</span></span>`).join('');
+  box.innerHTML=names.map((item,i)=>{
+    const n=typeof item==='string'?item:item.name;
+    const ref=typeof item==='object'?item.refUrl:null;
+    const safe=n.replace(/'/g,"\\'");
+    return `<div class="name-item">
+      ${ref
+        ? `<img class="name-photo" src="${ref}" title="Zdjecie referencyjne">`
+        : `<div class="name-photo-placeholder" onclick="uploadRef(${i})" title="Dodaj zdjecie">📷</div>`
+      }
+      <span class="nname">${n}</span>
+      ${ref?`<span style="font-size:9px;color:var(--ok)">📷</span>`:''}
+      <span class="x" onclick="removeName('${safe}')">×</span>
+    </div>`;
+  }).join('');
   document.getElementById('names-cnt').textContent=names.length;
   localStorage.setItem('nft-names',JSON.stringify(names));
 }
 function addName(){
   const inp=document.getElementById('new-name'); const v=inp.value.trim(); if(!v) return;
-  if(names.includes(v)){toast('Już na liście','err');return;}
-  names.push(v); inp.value=''; renderNames();
+  if(names.find(x=>(typeof x==='string'?x:x.name)===v)){toast('Już na liście','err');return;}
+  names.push({name:v,refUrl:null}); inp.value=''; renderNames();
 }
-function removeName(n){names=names.filter(x=>x!==n);renderNames();}
+function removeName(n){names=names.filter(x=>(typeof x==='string'?x:x.name)!==n);renderNames();}
 function clearNames(){if(!confirm('Wyczyścić listę?'))return;names=[];renderNames();}
-function addSamples(){SAMPLES.forEach(n=>{if(!names.includes(n))names.push(n);});renderNames();toast('Dodano 10 celebrytów ✓');}
+function addSamples(){SAMPLES.forEach(n=>{if(!names.find(x=>(typeof x==='string'?x:x.name)===n))names.push({name:n,refUrl:null});});renderNames();toast('Dodano 10 celebrytów ✓');}
 function loadCSV(e){
   const f=e.target.files[0];if(!f)return;
   const r=new FileReader();
-  r.onload=ev=>{ev.target.result.split(/\r?\n/).map(l=>l.replace(/['"]/g,'').split(',')[0].trim()).filter(Boolean).forEach(n=>{if(!names.includes(n))names.push(n);});renderNames();toast('CSV załadowany ✓');};
+  r.onload=ev=>{ev.target.result.split(/\r?\n/).map(l=>l.replace(/['"]/g,'').split(',')[0].trim()).filter(Boolean).forEach(n=>{if(!names.find(x=>(typeof x==='string'?x:x.name)===n))names.push({name:n,refUrl:null});});renderNames();toast('CSV załadowany ✓');};
   r.readAsText(f);e.target.value='';
 }
 
@@ -761,13 +779,15 @@ async function syncToFirebase(){
   const steps=parseInt(document.getElementById('steps').value);
   const existing=await db.collection('nft_items').get();
   const existingIds=new Set(existing.docs.map(d=>d.id));
-  const toAdd=names.filter(n=>!existingIds.has(nameToId(n,activePreset)));
+  const namesList=names.map(x=>typeof x==='string'?{name:x,refUrl:null}:x);
+  const toAdd=namesList.filter(x=>!existingIds.has(nameToId(x.name,activePreset)));
   if(!toAdd.length){toast('Wszystkie postaci już są w Firebase dla tego stylu','err');return;}
   try{
     const batch=db.batch();
-    toAdd.forEach(name=>{
+    toAdd.forEach(item=>{
+      const name=item.name; const refUrl=item.refUrl||null;
       const ref=db.collection('nft_items').doc(nameToId(name,activePreset));
-      batch.set(ref,{name,status:'pending',createdAt:firebase.firestore.FieldValue.serverTimestamp(),imageUrl:null,prompt:null,generationTime:null,stylePrompt,negPrompt,presetId:activePreset,presetName:p?p.name:'custom',modelId:activeModel,modelName:MODELS.find(x=>x.id===activeModel)?.name||activeModel,imgSize,steps});
+      batch.set(ref,{name,status:'pending',createdAt:firebase.firestore.FieldValue.serverTimestamp(),imageUrl:null,prompt:null,generationTime:null,stylePrompt,negPrompt,presetId:activePreset,presetName:p?p.name:'custom',modelId:activeModel,modelName:MODELS.find(x=>x.id===activeModel)?.name||activeModel,imgSize,steps,referenceImageUrl:refUrl});
     });
     await batch.commit();
     const msg='Dodano '+toAdd.length+' nowych zadań ['+( p?p.name:'custom')+']';
@@ -885,6 +905,40 @@ function deleteFromModal(){
   if(!confirm('Usunąć NFT: '+curModal.name+'?'))return;
   deleteItem(curModal.id);
   closeModal();
+}
+
+// Upload zdjecia referencyjnego przez Cloudinary unsigned upload
+const CLOUDINARY_CLOUD = 'dk3rjj75d';
+const CLOUDINARY_UPLOAD_PRESET = 'nft_refs'; // unsigned preset - trzeba utworzyc w Cloudinary
+
+function uploadRef(idx) {
+  const inp = document.createElement('input');
+  inp.type = 'file';
+  inp.accept = 'image/*';
+  inp.onchange = async (e) => {
+    const file = e.target.files[0]; if(!file) return;
+    toast('Uploadowanie zdjecia...');
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+    fd.append('folder', 'nft_refs');
+    try {
+      const r = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, {method:'POST',body:fd});
+      const data = await r.json();
+      if(data.secure_url) {
+        const item = names[idx];
+        names[idx] = {name: typeof item==='string'?item:item.name, refUrl: data.secure_url};
+        localStorage.setItem('nft-names', JSON.stringify(names));
+        renderNames();
+        toast('Zdjecie dodane ✓');
+      } else {
+        toast('Blad uploadu: '+JSON.stringify(data),'err');
+      }
+    } catch(err) {
+      toast('Blad: '+err.message,'err');
+    }
+  };
+  inp.click();
 }
 
 // ═══════════════════════════════════════
